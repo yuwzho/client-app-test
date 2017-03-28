@@ -1,5 +1,5 @@
 var assert = require('assert');
-var deviceToCloudClient = require('./lib/device-to-cloud.js');
+var deviceToCloudClient = require('./lib/iothubClient.js');
 var credential = require('./lib/credential.js');
 var sample = require('./lib/sample.js');
 var IoTHubClient = require('./lib/iothubClient.js');
@@ -13,7 +13,7 @@ describe('Test client application', function() {
     // start to run the client
     var deviceConnectionString = credential.getDeviceConnectionString();
     sample.run(deviceConnectionString);
-    var iothubConnectionString = credential.getHubConnectionString();    
+    var iothubConnectionString = credential.getHubConnectionString();
     client = new IoTHubClient(iothubConnectionString);
     consumerGroup = credential.getConsumerGroup();
     deviceId = credential.getDeviceId();
@@ -21,20 +21,21 @@ describe('Test client application', function() {
 
   after(function() {
     sample.stop();
-    client.startReadMessage();
+    client.stopReadMessage();
   });
   
-  it('get iot hub device-to-cloud message', function () {
+  it('get iot hub device-to-cloud message', function (done) {
+    this.timeout(60000);
     var start;
     var count = 0;
     client.startReadMessage(consumerGroup, deviceId, function(message, time) {
-      var obj = JSON.parse(message);
+      console.log(JSON.stringify(message));
       start = start || message.messageId;
       assert.equal(start + count, message.messageId);
       count++;
       // read 10 message and stop
       if(count === 10) {
-        client.stopReadMessage();
+        done();
       }
     });
   });

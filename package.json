@@ -1,0 +1,14 @@
+{
+  "name": "iot-hub-client-app-test",
+  "version": "1.0.0",
+  "description": "test case for iot hub happy path client application",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha *.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "azure-event-hubs": "0.0.6",
+    "mocha": "^3.2.0"
+  }
+}

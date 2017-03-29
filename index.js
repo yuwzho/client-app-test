@@ -3,6 +3,7 @@ var deviceToCloudClient = require('./lib/iothubClient.js');
 var credential = require('./lib/credential.js');
 var sample = require('./lib/sample.js');
 var IoTHubClient = require('./lib/iothubClient.js');
+var util = require('./lib/util.js');
 
 var client;
 var consumerGroup;
@@ -13,8 +14,10 @@ describe('Test client application', function () {
     this.timeout(60000);
 
     // start to run the client
+    var config = util.readFileSync('../.test.config.json');
+    credential.setOption(config);
     var deviceConnectionString = credential.getDeviceConnectionString();
-    sample.run(deviceConnectionString);
+    sample.run(deviceConnectionString, config);
     var iothubConnectionString = credential.getHubConnectionString();
     client = new IoTHubClient(iothubConnectionString);
     consumerGroup = credential.getConsumerGroup();
